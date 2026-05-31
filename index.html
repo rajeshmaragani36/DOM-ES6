@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App - DOM & ES6</title>
+</head>
+
+<body style="font-family:Arial;max-width:700px;margin:40px auto;padding:20px;">
+
+<h1 style="text-align:center;">Quiz App Using DOM Manipulation & ES6</h1>
+
+<div id="quizContainer"
+     style="border:1px solid #ddd;padding:20px;border-radius:10px;">
+
+    <h2 id="question">Question appears here</h2>
+
+    <div id="options"></div>
+
+    <button id="nextBtn"
+            style="margin-top:20px;padding:10px 20px;background:green;color:white;border:none;cursor:pointer;">
+        Next Question
+    </button>
+
+</div>
+
+<script>
+
+// Quiz Questions
+const quizData = [
+    {
+        question: "What does DOM stand for?",
+        options: [
+            "Document Object Model",
+            "Data Object Method",
+            "Digital Object Model",
+            "Desktop Oriented Model"
+        ],
+        answer: "Document Object Model"
+    },
+
+    {
+        question: "Which keyword creates a constant in ES6?",
+        options: [
+            "var",
+            "let",
+            "const",
+            "static"
+        ],
+        answer: "const"
+    },
+
+    {
+        question: "Which method adds an event listener?",
+        options: [
+            "addEvent()",
+            "listenEvent()",
+            "attachEvent()",
+            "addEventListener()"
+        ],
+        answer: "addEventListener()"
+    },
+
+    {
+        question: "Which method selects an element by CSS selector?",
+        options: [
+            "getElementById()",
+            "querySelector()",
+            "getElementsByTagName()",
+            "createElement()"
+        ],
+        answer: "querySelector()"
+    },
+
+    {
+        question: "Which symbol is used for ES6 arrow functions?",
+        options: [
+            "=>",
+            "->",
+            "::",
+            "==>"
+        ],
+        answer: "=>"
+    }
+];
+
+// DOM Elements
+const questionElement = document.querySelector("#question");
+const optionsElement = document.querySelector("#options");
+const nextBtn = document.querySelector("#nextBtn");
+
+let currentQuestion = 0;
+let score = 0;
+let selectedAnswer = "";
+
+// Load Question
+const loadQuestion = () => {
+
+    selectedAnswer = "";
+
+    const currentQuiz = quizData[currentQuestion];
+
+    questionElement.textContent =
+        `${currentQuestion + 1}. ${currentQuiz.question}`;
+
+    optionsElement.innerHTML = "";
+
+    currentQuiz.options.forEach(option => {
+
+        const button = document.createElement("button");
+
+        button.textContent = option;
+
+        button.style.display = "block";
+        button.style.width = "100%";
+        button.style.margin = "10px 0";
+        button.style.padding = "10px";
+
+        button.addEventListener("click", () => {
+
+            document
+                .querySelectorAll("#options button")
+                .forEach(btn => btn.style.background = "");
+
+            button.style.background = "lightblue";
+
+            selectedAnswer = option;
+        });
+
+        optionsElement.appendChild(button);
+    });
+};
+
+// Next Button
+nextBtn.addEventListener("click", () => {
+
+    if(selectedAnswer === ""){
+        alert("Please select an answer.");
+        return;
+    }
+
+    if(
+        selectedAnswer ===
+        quizData[currentQuestion].answer
+    ){
+        score++;
+    }
+
+    currentQuestion++;
+
+    if(currentQuestion < quizData.length){
+
+        loadQuestion();
+
+    } else {
+
+        document.querySelector("#quizContainer").innerHTML = `
+            <h2>Quiz Completed!</h2>
+            <h3>Your Score: ${score} / ${quizData.length}</h3>
+
+            <button onclick="location.reload()"
+                    style="padding:10px 20px;background:blue;color:white;border:none;">
+                Restart Quiz
+            </button>
+        `;
+    }
+});
+
+// Start Quiz
+loadQuestion();
+
+</script>
+
+</body>
+</html>
